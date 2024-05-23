@@ -14,7 +14,7 @@ public class PatientModel implements Serializable {
     private String namePatient;
     private int age;
     private String gender;
-    private int cep;
+    private String cep;
     private float weight;
     private float height;
     private String bloodPressure;
@@ -52,11 +52,11 @@ public class PatientModel implements Serializable {
         this.gender = gender;
     }
 
-    public int getCep() {
+    public String getCep() {
         return cep;
     }
 
-    public void setCep(int cep) {
+    public void setCep(String cep) {
         this.cep = cep;
     }
 
