@@ -2,11 +2,12 @@ package com.br.mediwatch.models;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
 @Table(name = "TB_CONSULTATIONS")
-public class ConsultationModel {
+public class ConsultationModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -16,6 +17,14 @@ public class ConsultationModel {
     private String status;
     private String locationConsultation;
     private String descriptionConsultation;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public String getDate() {
         return date;

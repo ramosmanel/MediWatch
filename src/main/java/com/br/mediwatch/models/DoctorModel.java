@@ -2,16 +2,17 @@ package com.br.mediwatch.models;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
 @Table(name = "TB_DOCTORS")
-public class DoctorModel {
+public class DoctorModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID idDoctor;
     private String nameDoctor;
-    private String sspecialtyDoctor;
+    private String specialtyDoctor;
     private String crmIdentification;
 
     public UUID getIdDoctor() {
@@ -30,12 +31,12 @@ public class DoctorModel {
         this.nameDoctor = nameDoctor;
     }
 
-    public String getSspecialtyDoctor() {
-        return sspecialtyDoctor;
+    public String getSpecialtyDoctor() {
+        return specialtyDoctor;
     }
 
-    public void setSspecialtyDoctor(String sspecialtyDoctor) {
-        this.sspecialtyDoctor = sspecialtyDoctor;
+    public void setSpecialtyDoctor(String specialtyDoctor) {
+        this.specialtyDoctor = specialtyDoctor;
     }
 
     public String getCrmIdentification() {
