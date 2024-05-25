@@ -1,7 +1,10 @@
 package com.br.mediwatch.controllers;
 
+import com.br.mediwatch.errors.DoctorNotFoundException;
 import com.br.mediwatch.errors.PatientNotFoundException;
+import com.br.mediwatch.models.DoctorModel;
 import com.br.mediwatch.models.PatientModel;
+import com.br.mediwatch.services.DoctorService;
 import com.br.mediwatch.services.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.BeanUtils;
 
 
+import javax.print.Doc;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,14 +22,15 @@ import java.util.UUID;
 @RequestMapping("/mediwatch")
 public class MediWatchController {
     private final PatientService patientService;
+    private final DoctorService doctorService;
 
     @Autowired
-    public MediWatchController(PatientService patientService) {
+    public MediWatchController(PatientService patientService, DoctorService doctorService) {
         this.patientService = patientService;
+        this.doctorService = doctorService;
     }
 
     //Patients
-
     @PostMapping("/patients")
     public ResponseEntity<PatientModel>  createPatient(@RequestBody PatientModel patient) {
         PatientModel newPatient = patientService.createPatient(patient);
@@ -46,7 +51,7 @@ public class MediWatchController {
     }
 
     @PutMapping("/patients/{id}")
-    public ResponseEntity<PatientModel> updatePatients(@PathVariable UUID id, PatientModel updatePatient) {
+    public ResponseEntity<PatientModel> updatePatients(@PathVariable UUID id, @RequestBody PatientModel updatePatient) {
         Optional<PatientModel> existingPatientOptional = patientService.getPatitentById(id);
         if (existingPatientOptional.isPresent()) {
             PatientModel existingPatient = existingPatientOptional.get();
@@ -65,6 +70,49 @@ public class MediWatchController {
             patientService.deletePatient(id);
             return ResponseEntity.noContent().build();
         } catch (PatientNotFoundException message) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    //Doctors
+    @PostMapping("/doctors")
+    public ResponseEntity<DoctorModel> createDoctor(@RequestBody DoctorModel doctor) {
+        DoctorModel newDoctor = doctorService.createDoctor(doctor);
+        return new ResponseEntity<>(newDoctor, HttpStatus.OK);
+    }
+
+    @GetMapping("/doctors")
+    public ResponseEntity<List<DoctorModel>> getAllDoctors() {
+        List<DoctorModel> doctors = doctorService.getAllDoctors();
+        return new ResponseEntity<>(doctors, HttpStatus.OK);
+    }
+
+    @GetMapping("/doctors/{id}")
+    public ResponseEntity<DoctorModel> getDoctorById(@PathVariable UUID id) {
+        Optional<DoctorModel> doctor = doctorService.getDoctorById(id);
+        return doctor.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/doctors/{id}")
+    public ResponseEntity<DoctorModel> updateDoctor(@PathVariable UUID id, @RequestBody DoctorModel updateDoctor) {
+        Optional<DoctorModel> existingDoctorOptional = doctorService.getDoctorById(id);
+        if (existingDoctorOptional.isPresent()) {
+            DoctorModel existingDoctor = existingDoctorOptional.get();
+            BeanUtils.copyProperties(updateDoctor, existingDoctor, "idDoctor");
+
+            DoctorModel updatedDoctor = doctorService.updateDoctor(id, existingDoctor);
+            return ResponseEntity.ok(updatedDoctor);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/doctors/{id}")
+    public ResponseEntity<?> deleteDoctor(@PathVariable UUID id) {
+        try {
+            doctorService.deleteDoctor(id);
+            return ResponseEntity.noContent().build();
+        }catch (DoctorNotFoundException message) {
             return ResponseEntity.notFound().build();
         }
     }
