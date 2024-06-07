@@ -13,6 +13,7 @@ public class ConsultationModel implements Serializable {
     private UUID id;
     private String date;
     private String nameDoctor;
+    private String namePatient;
     private String specialtyConsultation;
     private String status;
     private String locationConsultation;
@@ -41,6 +42,10 @@ public class ConsultationModel implements Serializable {
     public void setNameDoctor(String nameDoctor) {
         this.nameDoctor = nameDoctor;
     }
+
+    public String getNamePatient() {return namePatient;}
+
+    public void setNamePatient(String namePatient) {this.namePatient = namePatient;}
 
     public String getSpecialtyConsultation() {
         return specialtyConsultation;
